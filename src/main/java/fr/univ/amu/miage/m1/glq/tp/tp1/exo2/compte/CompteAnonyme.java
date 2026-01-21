@@ -1,5 +1,7 @@
 package fr.univ.amu.miage.m1.glq.tp.tp1.exo2.compte;
 
+import fr.univ.amu.miage.m1.glq.tp.tp1.exo2.exceptions.ExceptionSoldeInsuffisant;
+
 public class CompteAnonyme {
 		private static int nombreDeComptesCrees = 0;
 		public static int nombreDeComptesUtilises = 0;
@@ -44,6 +46,9 @@ public class CompteAnonyme {
 		}
 
 		public boolean depot( double montant )  {
+			if(montant < 0){
+				throw new IllegalArgumentException();
+			}
 			boolean depotEffectue = false;
 			if ( montant <= 0)  afficheTexteErreur("Montant invalide");
 			else { solde += montant ; depotEffectue = true; }
@@ -51,11 +56,23 @@ public class CompteAnonyme {
 		}
 
 		public void retrait( double montant ) {
+			if(montant < 0){
+				throw new IllegalArgumentException();
+			}
 			if ( montant <= 0) afficheTexteErreur("Montant invalide");
 			else solde -= montant ;
 		}
 		
 		public static void virement( CompteAnonyme source, CompteAnonyme dest, double montant) {
+			if(montant < 0){
+				throw new IllegalArgumentException();
+			}
+			if(montant > source.solde){
+				throw new ExceptionSoldeInsuffisant();
+			}
+			if(dest instanceof ComptePlacement){
+				throw new UnsupportedOperationException();
+			}
 			if ( montant <= 0) source.afficheTexteErreur("Montant invalide");
 			else if ( montant > source.getSolde() ) source.afficheTexteErreur("Solde insuffisant");
 			else if (dest.depot( montant)) source.retrait( montant);
